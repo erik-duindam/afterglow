@@ -69,35 +69,23 @@ class Afterglow {
 		var frame = (element.contentWindow || element.contentDocument);
 		var self = this;
 
-		frame.addEventListener("DOMContentLoaded", function() {
-			var doc = frame.document;
-			// Get lightboxplayers including sublime fallback
-			var lightboxtriggers = doc.querySelectorAll("a.afterglow,a.sublime");
-			console.log('Triggers 2', lightboxtriggers);
-			// Initialize players launching in a lightbox
-			for (var i = 0; i < lightboxtriggers.length; i++){
-				let trigger = new LightboxTrigger(lightboxtriggers[i]);
+		window.addEventListener("message", function(event) {
+			console.log('Received post message', event.data);
+			let div = document.createElement('div');
+			div.innerHTML = event.data;
 
-				self.bindLightboxTriggerEvents(trigger);
+			this.lightbox = new Lightbox();
 
-				self.lightboxtriggers.push(trigger);
-			}
+			var videoelement = div.getElementsByTagName('video')[0];
+
+			this.lightbox.passVideoElement(videoelement);
+
+			this.lightbox.launch();
+
+			// let trigger = new LightboxTrigger();
+			// self.bindLightboxTriggerEvents(trigger);
+			// self.lightboxtriggers.push(trigger);
 		});
-
-		var doc = frame.document;
-		// Get lightboxplayers including sublime fallback
-		var lightboxtriggers = doc.querySelectorAll("a.afterglow,a.sublime");
-		console.log('Triggers', lightboxtriggers);
-		// Initialize players launching in a lightbox
-		for (var i = 0; i < lightboxtriggers.length; i++){
-			let trigger = new LightboxTrigger(lightboxtriggers[i]);
-
-			this.bindLightboxTriggerEvents(trigger);
-
-			this.lightboxtriggers.push(trigger);
-		}
-
-
 	}
 
 	/**
