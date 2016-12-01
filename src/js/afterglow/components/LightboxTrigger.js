@@ -25,9 +25,14 @@ class LightboxTrigger extends DOMElement {
 	init(){
 		// Get the playerid
 		this.playerid = this.node.getAttribute("href").replace('#','');
-		
+
+		var element = document.getElementById('unboxd-iframe');
+		if (!element) return;
+
+		var frame = (element.contentWindow || element.contentDocument);
+
 		// Get the videoelement for this trigger
-		let videoelement = document.querySelector('#'+this.playerid);
+		let videoelement = frame.document.querySelector('#'+this.playerid);
 		this.videoelement = new DOMElement(videoelement);
 
 		this.prepare();
@@ -61,7 +66,7 @@ class LightboxTrigger extends DOMElement {
 		this.lightbox = new Lightbox();
 
 		var videoelement = this.videoelement.cloneNode(true);
-		
+
 		this.lightbox.passVideoElement(videoelement);
 
 		this.emit('trigger');

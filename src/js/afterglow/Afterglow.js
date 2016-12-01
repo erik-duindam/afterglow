@@ -14,7 +14,7 @@ import DOMElement from './lib/DOMElement';
 
 class Afterglow {
 
-	constructor(){
+	constructor(){ console.log('After glow');
 		/**
 		 * Will hold the players in order to make them accessible
 		 */
@@ -62,9 +62,32 @@ class Afterglow {
 	 * @return void
 	 */
 	prepareLightboxVideos(){
+		var element = document.getElementById('unboxd-iframe');
+		console.log('Element', element);
+		if (!element) return;
+
+		var frame = (element.contentWindow || element.contentDocument);
+		var self = this;
+
+		frame.addEventListener("DOMContentLoaded", function() {
+			var doc = frame.document;
+			// Get lightboxplayers including sublime fallback
+			var lightboxtriggers = doc.querySelectorAll("a.afterglow,a.sublime");
+			console.log('Triggers 2', lightboxtriggers);
+			// Initialize players launching in a lightbox
+			for (var i = 0; i < lightboxtriggers.length; i++){
+				let trigger = new LightboxTrigger(lightboxtriggers[i]);
+
+				self.bindLightboxTriggerEvents(trigger);
+
+				self.lightboxtriggers.push(trigger);
+			}
+		});
+
+		var doc = frame.document;
 		// Get lightboxplayers including sublime fallback
-		var lightboxtriggers = document.querySelectorAll("a.afterglow,a.sublime");
-		
+		var lightboxtriggers = doc.querySelectorAll("a.afterglow,a.sublime");
+		console.log('Triggers', lightboxtriggers);
 		// Initialize players launching in a lightbox
 		for (var i = 0; i < lightboxtriggers.length; i++){
 			let trigger = new LightboxTrigger(lightboxtriggers[i]);
@@ -73,6 +96,8 @@ class Afterglow {
 
 			this.lightboxtriggers.push(trigger);
 		}
+
+
 	}
 
 	/**
@@ -153,7 +178,7 @@ class Afterglow {
 		for (var i = this.players.length - 1; i >= 0; i--) {
 			if(this.players[i] !== undefined && !this.players[i].alive){
 				delete this.players[i];
-				
+
 				// Reset indexes
 				this.players = this.players.filter(() =>{return true});
 			}
@@ -166,7 +191,7 @@ class Afterglow {
 	 */
 	configureVideoJS(){
 		// Disable tracking
-		window.HELP_IMPROVE_VIDEOJS = false;	
+		window.HELP_IMPROVE_VIDEOJS = false;
 	}
 }
 
